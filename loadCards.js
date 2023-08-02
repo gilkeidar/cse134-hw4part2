@@ -5,14 +5,15 @@ function init() {
     const projectData = getProjectData();
     populateLocalData(projectData);
 
-    //  Get data from server
+    //  Get data from server (first time, but reload every time button
+    //      is pressed)
     getRemoteData().then(data => {
         //  Loaded data from the server
         //  Find remote button, enable it, and add a click event listener
         const remoteButton = document.querySelector('#remote-button');
         remoteButton.removeAttribute('disabled');
         remoteButton.addEventListener('click', function() {
-            remoteLoad(data);
+            remoteLoad(data, remoteButton);
         })
     })
 
@@ -29,7 +30,7 @@ function getProjectData() {
     const data = [
         {
             "project-name": "ByteFrost",
-            "img": null,
+            "img": "/assets/images/bytefrost-thumbnail-640_x_360.jpg",
             "alt": "ByteFrost, an 8 Bit Breadboard Computer",
             "description": "An ongoing project to build an 8 bit CPU using breadboards.",
             "href": null
@@ -91,44 +92,37 @@ function localLoad() {
     outputProjects(data);
 }
 
-function remoteLoad(projectData) {
+async function remoteLoad(projectData, remoteButton) {
     console.log('remote');
+    console.log(remoteButton);
+
+    //  If not first time press, then reload data from server
+    if (remoteButton.hasAttribute('data-clicked')) {
+        resetOutput("<p>Loading from JSONBin.io...</p>");
+        projectData = await getRemoteData();
+    }
+    else {
+        remoteButton.dataset.clicked = true;
+    }
 
     outputProjects(projectData.data);
 }
 
-function outputProjects(projectData) {
-    console.log(projectData);
+function resetOutput(val) {
     //  Find output tag
     const output = document.querySelector('output');
 
     //  Reset output
-    output.innerHTML = '';
+    output.innerHTML = val;
 
-    // let projectsHTML = '';
+    return output;
+}
 
-    // projectData.forEach(project => {
-    //     //  Add starting tag
-    //     projectsHTML += '<project-card';
-
-    //     //  Set attributes
-    //     for (let prop in project) {
-    //         //  Skip property if value is null or empty string
-    //         let attributeValue = project[prop];
-
-    //         if (attributeValue) {      
-    //             //  Add data- prefix for name and description attributes
-    //             if (prop == 'name' || prop == 'description') {
-    //                 prop = 'data-' + prop;
-    //             }
-    //             projectsHTML += ` ${prop}="${attributeValue}"`;
-    //         } 
-    //     }
-
-    //     projectsHTML += '></project-card>';
-
-    //     console.log(projectsHTML);
-    // });
+function outputProjects(projectData) {
+    console.log(projectData);
+    
+    //  Reset output
+    const output = resetOutput('');
 
     projectData.forEach(project => {
         //  Create a new <project-card> element
@@ -140,20 +134,14 @@ function outputProjects(projectData) {
             let attributeValue = project[prop];
 
             if (attributeValue) {
-                //  Switch to camelCase
-                if (prop == 'project-name') {
-                    prop = 'projectName';
-                }
-
-                projectCard[prop] = attributeValue;
+                // projectCard[prop] = attributeValue;
+                projectCard.setAttribute(prop, attributeValue);
             }
         }
 
         //  Add project card to output
         output.appendChild(projectCard);
-    })
-
-    // output.innerHTML = projectsHTML;
+    });
 }
 
 window.addEventListener('DOMContentLoaded', init);

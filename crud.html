@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Custom Elements</title>
+    <script src="projectCard.js" type="module"></script>
+    <script src="crud.js" type="module"></script>
+    <style>
+        input {
+            padding: 0.25rem;
+        }
+
+        form {
+            max-width: 50rem;
+            min-width: fit-content;
+        }
+
+        form > fieldset:last-of-type {
+            display: grid;
+            grid-template-columns: auto auto;
+            row-gap: 1rem;
+            align-items: center;
+        }
+
+        input[type="submit"] {
+            margin-block-start: 1rem;
+            width: 100%;
+        }
+
+        output {
+            display: grid;
+            min-width: fit-content;
+            background-color: beige;
+        }
+      </style>
+</head>
+<body>
+    <h1><abbr title="Create, Read, Update, Delete">CRUD</abbr></h1>
+    <noscript>
+        <p><em>Note: This demo requires JavaScript to be turned on.</em></p>
+    </noscript>
+    <form id="crud">
+        <fieldset>
+            <legend>Access Local (localStorage) or Remote (JSONBin.io)?</legend>
+            <label><input type="radio" name="local-or-remote" value="local">Local</label>
+            <label><input type="radio" name="local-or-remote" value="remote">Remote</label>
+        </fieldset>
+        <fieldset>
+            <legend>CRUD Operation</legend>
+            <label for="crud-operation-field">Action</label>
+            <select id="crud-operation-field" name="action">
+                <option value="create">Create</option>
+                <option value="read">Read</option>
+                <option value="update">Update</option>
+                <option value="delete">Delete</option>
+            </select>
+        </fieldset>
+        <fieldset>
+            <legend>Create</legend>
+            <label for="project-name" required>Project Name</label>
+            <input type="text" id="project-name" name="name">
+            <label for="project-img">Image URL</label>
+            <input type="url" id="project-img" name="img">
+            <label for="project-img-alt">Image alt text</label>
+            <input type="text" id="project-img-alt" name="alt">
+            <label for="project-description">Description</label>
+            <input type="text" id="project-description" name="description">
+            <label for="project-page-link">Project Page Link</label>
+            <input type="text" id="project-page-link" name="href">
+        </fieldset>
+        <input type="submit" value="Send" disabled>
+    </form>
+    <output></output>
+    <template id="project-card">
+		<style>
+			/* Project Card Styles */
+			/* Color palette (partially using): https://colorhunt.co/palette/f9f7f7dbe2ef3f72af112d4e */
+
+			* {
+				box-sizing: border-box;
+			}
+
+			:host {
+				/* CSS Variables */
+				/* Colors */
+				--card-background-color: #DBE2EF;
+				--heading-color: #112D4E;
+				--link-color: darkblue;
+				--link-hover-color: darkgoldenrod;
+
+				/* Fonts */
+				--font-family: 'Helvetica';
+				--default-font-size: 1.5rem;
+				--heading-font-size: 2.5rem;
+
+				/* Transitions */
+				--hover-duration: 100ms;
+				
+				/* CSS Variables */
+				
+				/* border: 1px solid red; */
+				border: 1px solid var(--heading-color);
+				background-color: var(--card-background-color);
+
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				grid-template-rows: min-content 1fr min-content;
+				grid-template-areas:
+				"name name"
+				"image description"
+				"image read-more";
+				gap: 1rem;
+				padding: 1.5rem;
+				margin: 1rem;
+				border-radius: 0.5rem;
+				
+				max-width: 40rem;
+				/* width: fit-content; */
+				min-width: 15rem;
+
+				font-family: var(--font-family), sans-serif;
+				font-size: var(--default-font-size);
+			}
+
+			:host > * {
+				margin: 0;
+			}
+
+			/* Project Title */
+			:host > h2 {
+				grid-area: name;
+				color: var(--heading-color);
+				font-size: var(--heading-font-size);
+				font-weight: normal;
+			}
+
+			:host > img {
+				grid-area: image;
+				height: 100%;
+				width: 100%;
+				object-fit: contain;
+			}
+
+			:host > p {
+				grid-area: description;
+				max-width: 60ch;
+			}
+
+			:host > a {
+				grid-area: read-more;
+				text-align: end;
+			}
+
+			a {
+				color: var(--link-color);
+				text-decoration: none;
+				transition-property: color;
+				transition-duration: var(--hover-duration);
+			}
+
+			a:hover {
+				color: var(--link-hover-color);
+			}
+		</style>
+		<h2></h2>
+		<img>
+		<p></p>
+		<a></a>
+    </template>
+</body>
+</html>
