@@ -149,7 +149,7 @@ class ProjectCard extends HTMLElement {
     updateImageSource() {
         this.img = this.hasAttribute('img')
             ? this.img
-            : '//assets/images/default-project.png';
+            : '/assets/images/default-project.png';
     }
 
     get img() {

@@ -28,7 +28,7 @@ function getProjectData() {
     //  A null value or an empty string should be ignored when rendering
     const data = [
         {
-            "name": "ByteFrost",
+            "project-name": "ByteFrost",
             "img": null,
             "alt": "ByteFrost, an 8 Bit Breadboard Computer",
             "description": "An ongoing project to build an 8 bit CPU using breadboards.",
@@ -52,15 +52,28 @@ function populateLocalData(projectData) {
 async function getRemoteData() {
     console.log('populate remote data');
 
-    let binID = '64c9a3779d312622a38a426c';
+    let binID = '64cadee28e4aa6225ec99e90';
+
+    let key = '$2b$10$AmKGpngTiOBRil5LHPbjnuDghlIZ7VApGvYP5WM1/CAwvRs5AFYLe';
 
     //  Fetch JSONBin.io data
-    let data = await fetch(`https://api.jsonbin.io/v3/b/${binID}`).then(response => {
-        console.log(response);
-        return response.json();
-    });
+    let data = await fetch(`https://api.jsonbin.io/v3/b/${binID}`,
+        {
+            method: 'GET',
+            headers: {
+                'X-Master-Key': key,
+            }
+        }
+        ).then(response => {
+            console.log(response);
+            return response.json();
+        });
 
-    //  TODO: Possibly refactor this to be safer? i.e. check that record prop exists
+    //  Check that record property exists
+    if (!data.record) {
+        throw Error('getRemoteData: Invalid data retrieved from server!');
+    }
+
     return data.record;
 }
 
@@ -89,32 +102,58 @@ function outputProjects(projectData) {
     //  Find output tag
     const output = document.querySelector('output');
 
-    let projectsHTML = '';
+    //  Reset output
+    output.innerHTML = '';
+
+    // let projectsHTML = '';
+
+    // projectData.forEach(project => {
+    //     //  Add starting tag
+    //     projectsHTML += '<project-card';
+
+    //     //  Set attributes
+    //     for (let prop in project) {
+    //         //  Skip property if value is null or empty string
+    //         let attributeValue = project[prop];
+
+    //         if (attributeValue) {      
+    //             //  Add data- prefix for name and description attributes
+    //             if (prop == 'name' || prop == 'description') {
+    //                 prop = 'data-' + prop;
+    //             }
+    //             projectsHTML += ` ${prop}="${attributeValue}"`;
+    //         } 
+    //     }
+
+    //     projectsHTML += '></project-card>';
+
+    //     console.log(projectsHTML);
+    // });
 
     projectData.forEach(project => {
-        //  Add starting tag
-        projectsHTML += '<project-card';
+        //  Create a new <project-card> element
+        const projectCard = document.createElement('project-card');
 
         //  Set attributes
         for (let prop in project) {
             //  Skip property if value is null or empty string
             let attributeValue = project[prop];
 
-            if (attributeValue) {      
-                //  Add data- prefix for name and description attributes
-                if (prop == 'name' || prop == 'description') {
-                    prop = 'data-' + prop;
+            if (attributeValue) {
+                //  Switch to camelCase
+                if (prop == 'project-name') {
+                    prop = 'projectName';
                 }
-                projectsHTML += ` ${prop}="${attributeValue}"`;
-            } 
+
+                projectCard[prop] = attributeValue;
+            }
         }
 
-        projectsHTML += '></project-card>';
+        //  Add project card to output
+        output.appendChild(projectCard);
+    })
 
-        console.log(projectsHTML);
-    });
-
-    output.innerHTML = projectsHTML;
+    // output.innerHTML = projectsHTML;
 }
 
 window.addEventListener('DOMContentLoaded', init);
