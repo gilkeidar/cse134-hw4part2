@@ -33,7 +33,7 @@ function getProjectData() {
             "img": "/assets/images/bytefrost-thumbnail-640_x_360.jpg",
             "alt": "ByteFrost, an 8 Bit Breadboard Computer",
             "description": "An ongoing project to build an 8 bit CPU using breadboards.",
-            "href": null
+            "href": "https://gil-keidar.netlify.app/projects/bytefrost"
         }
     ]
 
