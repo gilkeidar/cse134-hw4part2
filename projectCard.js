@@ -1,87 +1,91 @@
 //  project-card custom element definition
+
 // class ProjectCard extends HTMLElement {
 //     constructor() {
 //         //  Always call super() first in the constructor
 //         super();
+        
+//         console.log("ProjectCard constructor");
 
 //         //  Attach the Shadow DOM to the web component
 //         this.attachShadow({ mode: 'open' });
+
+//         //  Get project-card template
+//         const template = document.querySelector('#project-card');
+
+//         //  Clone template
+//         const projectCard = template.content.cloneNode(true);
 
 //         //  project-card element consists of:
 //         //  <h2> tag    - project name
 //         //  <img> tag   - project image w/alt text
 //         //  <p> tag     - project description
 //         //  <a> tag     - Read More link
-//         //  <section>   - Skills used in the project
-//         //      <h3>    - "Skills"
-//         //      <ul>    - project list of skills used in the project
 
-//         //  Create <h2> tag
-//         const projectName = document.createElement('h2');
+//         //  Set <h2> tag (title)
+//         const projectName = projectCard.querySelector('h2');
 //         //  Set project name with attribute
-//         projectName.innerText = this.hasAttribute('data-name')
+//         projectName.innerHTML = this.hasAttribute('data-name')
 //             ? this.getAttribute('data-name')
 //             : 'Untitled Project';
         
-//         //  Create <img> tag
-//         const projectImage = document.createElement('img');
+//         //  Set <img> tag
+//         const projectImage = projectCard.querySelector('img');
 //         //  Set image source with attribute
 //         projectImage.src = this.hasAttribute('img')
 //             ? this.getAttribute('img')
-//             : 'assets/images/default.png';
+//             : '/assets/images/default-project.png';
         
 //         //  Set alt text with attribute
 //         projectImage.alt = this.hasAttribute('alt')
 //             ? this.getAttribute('alt')
-//             : `Image of ${projectName.innerText}`;
+//             : `Image of ${projectName.innerHTML}`;
         
-//         //  Create <p> tag
-//         const projectDescription = document.createElement('p');
+//         //  Set <p> tag
+//         const projectDescription = projectCard.querySelector('p');
 //         //  Set project description with an attribute
-//         projectDescription.innerText = this.hasAttribute('data-description')
+//         projectDescription.innerHTML = this.hasAttribute('data-description')
 //             ? this.getAttribute('data-description')
-//             : `Project Description for ${projectName.innerText}`;
+//             : `Project Description for ${projectName.innerHTML}`;
 
-//         //  Create <a> tag
-//         const readMore = document.createElement('a');
+//         //  Set <a> tag
+//         const readMore = projectCard.querySelector('a');
 //         //  Set Read More link
-//         readMore.innerText = 'Read More';
+//         readMore.innerHTML = 'Read More';
 //         readMore.href = this.hasAttribute('href')
 //             ? this.getAttribute('href')
 //             : '';
-        
-//         //  Create Skill list section
-//         // const skillSection = document.createElement('section');
-//         // const skillHeading = document.createElement('h3');
-//         // skillHeading.innerText = 'Skills';
-//         // const skillList = document.createElement('ul');
-//         // skill
 
-//         //  Add linked styles
-//         const linkedStyle = document.createElement('link');
-//         linkedStyle.rel = 'stylesheet';
-//         linkedStyle.href = 'projectCard.css';
-//         linkedStyle.type = 'text/css';
+//         //  Append projectCard to the Shadow DOM
+//         this.shadowRoot.appendChild(projectCard);
+//     }
 
-//         //  Add styling (import)
-//         // const style = document.createElement('style');
-//         // style.innerText = '@import "/projectCard.css"';
-        
-//         //  Append tags to the Shadow DOM
-//         this.shadowRoot.append(linkedStyle, projectName, 
-//             projectImage, projectDescription, readMore);
+//     static get observedAttributes() {
+//         return ['data-name', 'img', 'alt', 'data-description', 'href']
+//     }
+
+//     attributeChangedCallback(name, oldValue, newValue) {
+//         console.log("ProjectCard attributeChangedCallback");
+//         console.log(name);
+//         console.log(oldValue);
+//         console.log(newValue);
+//         console.log("----");
 //     }
 // }
 
+
 class ProjectCard extends HTMLElement {
+
+    #shadow;
+
     constructor() {
         //  Always call super() first in the constructor
         super();
-        
-        console.log("ProjectCard constructor");
+
+        console.log('ProjectCard constructor()');
 
         //  Attach the Shadow DOM to the web component
-        this.attachShadow({ mode: 'open' });
+        this.#shadow = this.attachShadow({ mode: 'open' });
 
         //  Get project-card template
         const template = document.querySelector('#project-card');
@@ -95,55 +99,156 @@ class ProjectCard extends HTMLElement {
         //  <p> tag     - project description
         //  <a> tag     - Read More link
 
-        //  Set <h2> tag (title)
-        const projectName = projectCard.querySelector('h2');
-        //  Set project name with attribute
-        projectName.innerHTML = this.hasAttribute('data-name')
-            ? this.getAttribute('data-name')
-            : 'Untitled Project';
-        
-        //  Set <img> tag
-        const projectImage = projectCard.querySelector('img');
-        //  Set image source with attribute
-        projectImage.src = this.hasAttribute('img')
-            ? this.getAttribute('img')
-            : '/assets/images/default-project.png';
-        
-        //  Set alt text with attribute
-        projectImage.alt = this.hasAttribute('alt')
-            ? this.getAttribute('alt')
-            : `Image of ${projectName.innerHTML}`;
-        
-        //  Set <p> tag
-        const projectDescription = projectCard.querySelector('p');
-        //  Set project description with an attribute
-        projectDescription.innerHTML = this.hasAttribute('data-description')
-            ? this.getAttribute('data-description')
-            : `Project Description for ${projectName.innerHTML}`;
-
-        //  Set <a> tag
-        const readMore = projectCard.querySelector('a');
-        //  Set Read More link
-        readMore.innerHTML = 'Read More';
-        readMore.href = this.hasAttribute('href')
-            ? this.getAttribute('href')
-            : '';
-
         //  Append projectCard to the Shadow DOM
         this.shadowRoot.appendChild(projectCard);
+
+        //  Set tags
+
+        //  Set <h2> tag (title)
+        this.updateProjectName();
+
+        //  Set <img> tag
+        this.updateImageSource();
+        this.updateImageAlt();
+
+        //  Set <p> tag
+        this.updateDescription();
+
+        //  Set <a> tag
+        const readMore = this.#shadow.querySelector('a');
+        readMore.innerHTML = 'Read More';
+        this.updateLink();
     }
 
-    // static get observedAttributes() {
-    //     return ['data-name', 'img', 'alt', 'data-description', 'href']
-    // }
+    static get observedAttributes() {
+        return ['project-name', 'img', 'alt', 'description', 'href'];
+    }
 
-    // attributeChangedCallback(name, oldValue, newValue) {
-    //     console.log("ProjectCard attributeChangedCallback");
-    //     console.log(name);
-    //     console.log(oldValue);
-    //     console.log(newValue);
-    // }
+    //  project-name
+    updateProjectName() {
+        this.projectName = this.hasAttribute('project-name')
+            ? this.projectName
+            : 'Untitled Project';
+    }
+
+    get projectName() {
+        return this.hasAttribute('project-name')
+            ? this.getAttribute('project-name')
+            : this.#shadow.querySelector('h2').innerHTML;
+    }
+
+    set projectName(val) {
+        //  Find <h2> tag
+        const h2 = this.#shadow.querySelector('h2');
+
+        h2.innerHTML = val;
+    }
+
+    //  img
+
+    updateImageSource() {
+        this.img = this.hasAttribute('img')
+            ? this.img
+            : '//assets/images/default-project.png';
+    }
+
+    get img() {
+        return this.getAttribute('img');
+    }
+
+    set img(val) {
+        //  Find <img> tag
+        const img = this.#shadow.querySelector('img');
+
+        //  Set img src
+        img.src = val;
+    }
+
+    //  alt
+
+    updateImageAlt() {
+        this.alt = this.hasAttribute('alt')
+            ? this.alt
+            : `Image of ${this.projectName}`;
+    }
+
+    get alt() {
+        return this.getAttribute('alt');
+    }
+
+    set alt(val) {
+        //  Find <img> tag
+        const img = this.#shadow.querySelector('img');
+
+        //  Set img alt
+        img.alt = val;
+    }
+
+    //  description
+
+    updateDescription() {
+        this.description = this.hasAttribute('description')
+            ? this.description
+            : `Project Description for ${this.projectName}`;
+    }
+
+    get description() {
+        return this.getAttribute('description');
+    }
+
+    set description(val) {
+        //  Find <p> tag
+        const p = this.#shadow.querySelector('p');
+
+        //  Set description
+        p.innerHTML = val;
+    }
+
+    //  href
+
+    updateLink() {
+        this.href = this.hasAttribute('href')
+            ? this.href
+            : '';
+    }
+
+    get href() {
+        return this.getAttribute('href');
+    }
+
+    set href(val) {
+        //  Find <a> tag
+        const a = this.#shadow.querySelector('a');
+
+        //  Set link
+        a.href = val;
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        console.log('ProjectCard attributeChangedCallback');
+
+        console.log(`attribute: ${name} | oldValue: ${oldValue} | newValue: ${newValue}`);
+
+        switch (name) {
+            case 'project-name':
+                this.updateProjectName();
+                break;
+            case 'img':
+                this.updateImageSource();
+                break;
+            case 'alt':
+                this.updateImageAlt();
+                break;
+            case 'description':
+                this.updateDescription();
+                break;
+            case 'href':
+                this.updateLink();
+                break;
+        }
+    }
 }
+
 
 //  Define new custom element
 customElements.define('project-card', ProjectCard);
