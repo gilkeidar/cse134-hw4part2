@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Gallery</title>
+  <!--
+      Add CSS as you like linked or otherwise, but encapsulate most within the card components.  
+
+      You should also include the script code separately.  You may wish to have individual files 
+      for the customElement vs the page layout and CRUD actions if you do them. Regardless of 
+      what you do you use ES modules and vanilla JS.
+    -->
+  <script src="projectCard.js" type="module"></script>
+  <script src="loadCards.js" type="module"></script>
+  <style>
+	output {
+		display: grid;
+		min-width: fit-content;
+		background-color: beige;
+	}
+  </style>
+</head>
+
+<body>
+  <!--
+      This page will contain a list of cards which will contain cards that overview each project in 
+      your portfolio. You will dynamically create these cards as CustomElements using JavaScript 
+      and populate them from localStorage and from a JSON file fetched remotely from a server using 
+      Ajax or fetch.
+
+      You should create a CustomElement called <project-card> which will contain at least the 
+      following elements:
+
+        - <h2>Project Name</h2>
+        - <img src="image.jpg" alt="Project Image">
+        - <p>Project Description</p>
+        - <a href="URL">Read More</a>
+
+      You can have more things if you like such as date, keywords or tags, author, etc.
+
+      Make two buttons "Load Local" and "Load Remote" in both cases you will fetch and array of JSON 
+      data to populate your cards. The difference is that the "Load Local" button will fetch from 
+      localStorage and the "Load Remote" button will fetch from a remote server. 
+
+      - You should use CSS variables to style your cards.
+      - You should use CSS grid or flexbox to layout your cards.
+      - You should use the CustomElements API to create your custom elements.
+      - You should use either JSONBin API or My JSON Server to store your data in the cloud.
+      - You should use the localStorage API to store your data locally.
+      - You should use the fetch or XMLHttpRequest API to fetch data from a server.
+      
+      - You can use any random data you like and images you like for the cards, but eventually you 
+      may want to change it.
+      - You can use the Unsplash API to get random images for your cards. 
+      - You can use the JSONPlaceholder API to get random data for your cards. 
+      - You can use the DOM API to add your custom elements to the DOM. 
+
+      You should be able to do this for some canned set of data you store in localStorage 
+      and the cloud.
+
+      For extra credit (10%) you can create a second page crud.html which has a form that allows you 
+      to perform CRUD actions (create, add, update, delete) on the data in either the localStorage or 
+      cloud based storage. You may roll this code yourself or use something like ZingGrid or any 
+      other simple custom element you can find for your fake backend.
+
+      In all cases except the following section you may not use any libraries or frameworks. You 
+      must use the native APIs and vanilla JavaScript. This includes Lit and jQuery as well as any 
+      other library or framework.
+
+      Advanced students with existing framework knowledge may wish to perform this activity again 
+      with a framework or library of their choice for further extra credit. If you do this, you 
+      must still do the vanilla JavaScript version first and then do the framework version as 
+      further extra credit (5% more). You must however do the first extra credit before you attempt 
+      the second.  We will not accept second extra credits without the first. The second extra credit 
+      requires a README.md with an analysis of the performance and lines of code impact of using the 
+      framework or library. If you perform the 2nd extra credit you must be cautious to provide a 
+      fully working example that does not require complex set-up for the grader. You should either 
+      use a local file, CDN or other simple method to load the framework or library. You should not 
+      require the grader to install anything or run any build scripts.
+    -->
+
+	<h1>Projects</h1>
+	<button id="local-button" disabled>Load Local</button>
+	<button id="remote-button" disabled>Load Remote</button>
+	<noscript>
+		<p><em>Note: This demo requires JavaScript to be turned on.</em></p>
+	</noscript>
+	<output>
+		<!-- <project-card
+		data-name="ByteFrost"
+		alt="ByteFrost, an 8 Bit Breadboard Computer"
+		data-description="An ongoing project to build an 8 bit CPU using breadboards."
+		href=""
+		>
+		</project-card>
+		<project-card></project-card>
+		<project-card></project-card> -->
+	</output>
+    <template id="project-card">
+		<style>
+			/* Project Card Styles */
+			/* Color palette (partially using): https://colorhunt.co/palette/f9f7f7dbe2ef3f72af112d4e */
+
+			* {
+				box-sizing: border-box;
+			}
+
+			:host {
+				/* CSS Variables */
+				/* Colors */
+				--card-background-color: #DBE2EF;
+				--heading-color: #112D4E;
+				--link-color: darkblue;
+				--link-hover-color: darkgoldenrod;
+
+				/* Fonts */
+				--font-family: 'Helvetica';
+				--default-font-size: 1.5rem;
+				--heading-font-size: 2.5rem;
+
+				/* Transitions */
+				--hover-duration: 100ms;
+				
+				/* CSS Variables */
+				
+				/* border: 1px solid red; */
+				border: 1px solid var(--heading-color);
+				background-color: var(--card-background-color);
+
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				grid-template-rows: min-content 1fr min-content;
+				grid-template-areas:
+				"name name"
+				"image description"
+				"image read-more";
+				gap: 1rem;
+				padding: 1.5rem;
+				margin: 1rem;
+				border-radius: 0.5rem;
+				
+				max-width: 40rem;
+				/* width: fit-content; */
+				min-width: 15rem;
+
+				font-family: var(--font-family), sans-serif;
+				font-size: var(--default-font-size);
+			}
+
+			:host > * {
+				margin: 0;
+			}
+
+			/* Project Title */
+			:host > h2 {
+				grid-area: name;
+				color: var(--heading-color);
+				font-size: var(--heading-font-size);
+				font-weight: normal;
+			}
+
+			:host > img {
+				grid-area: image;
+				height: 100%;
+				width: 100%;
+				object-fit: contain;
+			}
+
+			:host > p {
+				grid-area: description;
+				max-width: 60ch;
+			}
+
+			:host > a {
+				grid-area: read-more;
+				text-align: end;
+			}
+
+			a {
+				color: var(--link-color);
+				text-decoration: none;
+				transition-property: color;
+				transition-duration: var(--hover-duration);
+			}
+
+			a:hover {
+				color: var(--link-hover-color);
+			}
+		</style>
+		<h2></h2>
+		<img>
+		<p></p>
+		<a></a>
+    </template>
+</body>
+
+</html>

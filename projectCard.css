@@ -1,0 +1,15 @@
+/* Project Card Styles */
+
+/* Color palette: https://colorhunt.co/palette/f6f4eb91c8e4749bc24682a9 */
+
+project-card {
+    display: grid;
+    grid-template-areas:
+    "name name"
+    "image description"
+    "image read-more";
+}
+
+h2 {
+    color: red;
+}
