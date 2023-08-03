@@ -29,6 +29,7 @@
         }
 
         output {
+			margin-block-start: 1rem;
             display: grid;
             min-width: fit-content;
             background-color: beige;
@@ -43,7 +44,7 @@
     <form id="crud">
         <fieldset>
             <legend>Access Local (localStorage) or Remote (JSONBin.io)?</legend>
-            <label><input type="radio" name="local-or-remote" value="local">Local</label>
+            <label><input type="radio" name="local-or-remote" value="local" checked>Local</label>
             <label><input type="radio" name="local-or-remote" value="remote">Remote</label>
         </fieldset>
         <fieldset>
@@ -54,14 +55,16 @@
                 <option value="read">Read</option>
                 <option value="update">Update</option>
                 <option value="delete">Delete</option>
+				<option value="read-all">Read All</option>
+				<option value="delete-all">Delete All (Danger!)</option>
             </select>
         </fieldset>
         <fieldset>
             <legend>Create</legend>
-            <label for="project-name" required>Project Name</label>
-            <input type="text" id="project-name" name="name">
+            <label for="project-name">Project Name</label>
+            <input type="text" id="project-name" name="name" required>
             <label for="project-img">Image URL</label>
-            <input type="url" id="project-img" name="img">
+            <input type="text" id="project-img" name="img">
             <label for="project-img-alt">Image alt text</label>
             <input type="text" id="project-img-alt" name="alt">
             <label for="project-description">Description</label>
