@@ -15,8 +15,6 @@ const g_elements = {form: null, fields: {}};
 const g_localStorageName = 'projects';
 
 function init() {
-    console.log('init');
-
     //  Populate data in localStorage
     const projectData = getProjectData();
     populateLocalData(projectData);
@@ -28,8 +26,6 @@ function init() {
     for (let field in g_selectors.fields) {
         g_elements.fields[field] = document.querySelector(g_selectors.fields[field]);
     }
-
-    console.log(g_elements);
 
     //  Set legend name
     setActionLegend();
@@ -87,9 +83,6 @@ async function formSubmit(event) {
     submitButton.disabled = true;
 
     let formData = new FormData(g_elements.form);
-
-    console.log(formData);
-    console.log(formData.get('action'));
 
     if (formData.get('name') === '') {
         //  Throw error if name isn't given but is required (i.e., for first four options)
@@ -175,8 +168,6 @@ function setActionLegend() {
 
 //  Talk to remote server
 async function remoteAction(action, sendData) {
-    console.log('talk to server');
-
     let binID = '64cb012b8e4aa6225ec9ad14';
 
     let key = '$2b$10$AmKGpngTiOBRil5LHPbjnuDghlIZ7VApGvYP5WM1/CAwvRs5AFYLe';
@@ -192,11 +183,8 @@ async function remoteAction(action, sendData) {
                 }
             }
             ).then(response => {
-                console.log(response);
                 return response.json();
             });
-
-            console.log("data read from server:", data);
 
             //  Check that record property exists
             if (!data.record) {
@@ -321,9 +309,6 @@ function outputProject(project) {
 //  CRUD handlers
 
 async function createAction(formData) {
-    console.log('create');
-    console.log(formData);
-
     //  Get projects JSON array
     let isLocal = formData.get('local-or-remote') == 'local';
     let data = await getData(isLocal);
@@ -347,8 +332,6 @@ async function createAction(formData) {
 }
 
 async function readAction(formData) {
-    console.log('read');
-
     //  Get projects JSON array
     let isLocal = formData.get('local-or-remote') == 'local';
     let data = await getData(isLocal);
@@ -368,8 +351,6 @@ async function readAction(formData) {
 }
 
 async function updateAction(formData) {
-    console.log('update');
-
     //  Get projects JSON array
     let isLocal = formData.get('local-or-remote') == 'local';
     let data = await getData(isLocal);
@@ -401,8 +382,6 @@ async function updateAction(formData) {
 }
 
 async function deleteAction(formData) {
-    console.log('delete');
-
     //  Get projects JSON array
     let isLocal = formData.get('local-or-remote') == 'local';
     let data = await getData(isLocal);
@@ -425,8 +404,6 @@ async function deleteAction(formData) {
 }
 
 async function readAll(formData) {
-    console.log('read all');
-
     //  Get projects JSON array
     let isLocal = formData.get('local-or-remote') == 'local';
     let data = await getData(isLocal);
@@ -447,8 +424,6 @@ async function readAll(formData) {
 }
 
 async function deleteAll(formData) {
-    console.log('delete all');
-
     //  Get projects JSON array
     let isLocal = formData.get('local-or-remote') == 'local';
     let data = await getData(isLocal);

@@ -1,6 +1,4 @@
 function init() {
-    console.log('init');
-
     //  Populate data in localStorage
     const projectData = getProjectData();
     populateLocalData(projectData);
@@ -51,8 +49,6 @@ function populateLocalData(projectData) {
 }
 
 async function getRemoteData() {
-    console.log('populate remote data');
-
     let binID = '64cadee28e4aa6225ec99e90';
 
     let key = '$2b$10$AmKGpngTiOBRil5LHPbjnuDghlIZ7VApGvYP5WM1/CAwvRs5AFYLe';
@@ -66,7 +62,6 @@ async function getRemoteData() {
             }
         }
         ).then(response => {
-            console.log(response);
             return response.json();
         });
 
@@ -79,8 +74,6 @@ async function getRemoteData() {
 }
 
 function localLoad() {
-    console.log('local');
-
     if (!localStorage) {
         //  localStorage not found in this browser
         throw Error('localLoad: No localStorage found!');
@@ -93,9 +86,6 @@ function localLoad() {
 }
 
 async function remoteLoad(projectData, remoteButton) {
-    console.log('remote');
-    console.log(remoteButton);
-
     //  If not first time press, then reload data from server
     if (remoteButton.hasAttribute('data-clicked')) {
         resetOutput("<p>Loading from JSONBin.io...</p>");
@@ -119,8 +109,6 @@ function resetOutput(val) {
 }
 
 function outputProjects(projectData) {
-    console.log(projectData);
-    
     //  Reset output
     const output = resetOutput('');
 

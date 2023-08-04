@@ -8,8 +8,6 @@ class ProjectCard extends HTMLElement {
         //  Always call super() first in the constructor
         super();
 
-        console.log('ProjectCard constructor()');
-
         //  Attach the Shadow DOM to the web component
         this.#shadow = this.attachShadow({ mode: 'open' });
 
@@ -151,12 +149,8 @@ class ProjectCard extends HTMLElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log('ProjectCard attributeChangedCallback');
-
         if (oldValue != newValue)
         {
-            console.log(`attribute: ${name} | oldValue: ${oldValue} | newValue: ${newValue}`);
-
             switch (name) {
                 case 'project-name':
                     this.updateProjectName();
